@@ -5,5 +5,3 @@ node_modules
 
 # ts build
 dev
-
-package-lock.json
