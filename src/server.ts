@@ -21,7 +21,9 @@ const PORT = ConfigsEnviroment.port;
 const configs: Configs = ConfigsEnviroment
 const app: Express = express();
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors({
+  exposedHeaders: ["Authorization", "Refresh-Token"]
+}))
 
 const redisClient = RedisClient(configs);
 const prisma = new PrismaClient();
