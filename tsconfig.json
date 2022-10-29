@@ -1,13 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es2016",
     "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "incremental": true,
     "skipLibCheck": true,
-    "outDir": "dev"
-  },
-  "include": ["./src/**/*", "src"],
-  "exclude": ["./node_modules", "**/*.spec.ts"]
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "typeRoots": ["./node_modules/@types", "./typings/index.d.ts"]
+  }
 }

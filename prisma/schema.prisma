@@ -11,12 +11,29 @@ datasource db {
 }
 
 model User {
-  id            BigInt    @id
-  email         String    @unique @db.VarChar(50)
-  fullName      String    @db.VarChar(50)
-  hashPassword  String    @db.VarChar(500)
-  salt          String    @db.VarChar(500)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now())
-  refreshToken  String?
+  id                                                BigInt                  @id @unique
+  email                                             String                  @unique
+  userName                                          String                  @unique
+  firstName                                         String
+  lastName                                          String
+  fullName                                          String
+  hashPassword                                      String
+  salt                                              String
+  refreshToken                                      String?
+  profileImageId                                    BigInt?
+  coverImageId                                      BigInt?
+  createdAt                                         DateTime                @default(now())
+  updatedAt                                         DateTime                @default(now())
+  profileImage                                      Image?                  @relation("profileImage", fields: [profileImageId], references: [id])
+  coverImage                                        Image?                  @relation("coverImage", fields: [coverImageId], references: [id])
+}
+
+model Image {
+  id                                                BigInt                  @id @unique
+  code                                              String?
+  url                                               String
+  createdAt                                         DateTime                @default(now())
+  updatedAt                                         DateTime                @default(now())
+  profileImage                                      User[]                  @relation("profileImage")
+  coverImage                                        User[]                  @relation("coverImage")
 }
