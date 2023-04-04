@@ -5,7 +5,8 @@
     "sourceType": "module"
   },
   "plugins": [
-    "@typescript-eslint/eslint-plugin"
+    "@typescript-eslint/eslint-plugin",
+    "prettier"
   ],
   "extends": [
     "plugin:@typescript-eslint/recommended"
@@ -16,109 +17,23 @@
     "jest": true,
     "es6": true
   },
-  "ignorePatterns": ["node_module/**", "dist/**", "prisma/**", "**/*.json", "**/*.yml"],
+  "ignorePatterns": [
+    "node_module/**",
+    "dist/**",
+    "prisma/**",
+    "**/*.json",
+    "**/*.yml",
+    "*.md",
+    "*ignore"
+  ],
   "rules": {
-    "semi": ["warn", "always"],
-    "indent": ["warn", 2],
-    "eol-last": "warn",
-    "quotes": ["warn", "single"],
-    "space-in-parens": ["warn", "never"],
-    "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 0, "maxBOF": 0 }],
-    "no-await-in-loop": "warn",
-    "no-sparse-arrays": "warn",
-    "default-param-last": "warn",
-    "no-console": ["warn", { "allow": ["log", "info"] }],
-    "no-else-return": "warn",
-    "no-lonely-if": "warn",
-    "no-return-assign": "warn",
-    "array-bracket-spacing": [
-      "warn",
-      "always",
-      {
-        "singleValue": false, "objectsInArrays": false, "arraysInArrays": false 
-      }
-    ],
-    "array-bracket-newline": ["warn", { "minItems": 4 }],
-    "array-element-newline": ["warn", { "multiline": true, "minItems": 4 }],
-    "arrow-spacing": "warn",
-    "comma-spacing": "warn",
-    "brace-style": ["warn", "1tbs", { "allowSingleLine": true }],
-    "object-curly-spacing": [
-      "warn",
-      "always",
-      {
-        "arraysInObjects": false,
-        "objectsInObjects": false
-      }
-    ],
-    "object-property-newline": ["warn", { "allowAllPropertiesOnSameLine": false }],
-    "object-curly-newline": [
-      "warn",
-      {
-        "ObjectExpression": { "multiline": true, "minProperties": 1, "consistent": true },
-        "ObjectPattern": { "multiline": true, "minProperties": 1, "consistent": true },
-        "ImportDeclaration": { "multiline": true, "minProperties": 3, "consistent": true },
-        "ExportDeclaration": { "multiline": true, "minProperties": 3, "consistent": true }
-      }
-    ],
-    "object-shorthand": ["warn", "always", {
-      "ignoreConstructors": false,
-      "avoidQuotes": false
-    }],
-    "max-len": "off",
-    "key-spacing": ["warn", { "beforeColon": false }],
-    "computed-property-spacing": ["warn", "never", { "enforceForClassMembers": true }],
-    "no-trailing-spaces": "warn",
-    "no-empty-function": [
-      "warn",
-      {
-        "allow": [
-          "constructors"
-        ]
-      }
-    ],
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "warn",
-    "max-statements-per-line": ["warn", { "max": 2 }],
-    "comma-dangle": ["warn", "always-multiline"],
-    "comma-style": ["error", "last"],
-    "eqeqeq": ["warn", "always"],
-    "space-unary-ops": [
-      "warn",
-      {
-        "words": true,
-        "nonwords": false,
-        "overrides": {
-          "new": false,
-          "++": true
-        }
-      }
-    ],
-    "padded-blocks": ["warn", "never"],
-    "prefer-destructuring": [
-      "warn",
-      {
-        "array": false,
-        "object": true
-      },
-      {
-        "enforceForRenamedProperties": false
-      }
-    ],
-    "no-whitespace-before-property": "warn",
-    "curly": "warn",
-    "template-curly-spacing": ["warn", "always"],
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/no-empty-function": "off",
-    "import/prefer-default-export": "off",
-    "space-before-function-paren": ["warn", {"anonymous": "always", "named": "never", "asyncArrow": "always"}],
-    "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["warn"],
-    "prefer-const": "warn",
-    "class-methods-use-this": "off"
+    "prettier/prettier": "warn"
   }
 }

@@ -20,12 +20,14 @@ model User {
   hashPassword                                      String
   salt                                              String
   refreshToken                                      String?
-  profileImageId                                    BigInt?
-  coverImageId                                      BigInt?
+  profileImageId                                    BigInt
+  coverImageId                                      BigInt
   createdAt                                         DateTime                @default(now())
   updatedAt                                         DateTime                @default(now())
-  profileImage                                      Image?                  @relation("profileImage", fields: [profileImageId], references: [id])
-  coverImage                                        Image?                  @relation("coverImage", fields: [coverImageId], references: [id])
+  profileImage                                      Image                   @relation("profileImage", fields: [profileImageId], references: [id])
+  coverImage                                        Image                   @relation("coverImage", fields: [coverImageId], references: [id])
+  connectedByUsers                                  User[]                  @relation("connectedUsers")
+  connectedToUsers                                  User[]                  @relation("connectedUsers")
 }
 
 model Image {

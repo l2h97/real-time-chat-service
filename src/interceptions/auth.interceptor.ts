@@ -1,12 +1,18 @@
 import {
-  CallHandler, ExecutionContext, Injectable, NestInterceptor,
-} from '@nestjs/common';
-import { map, Observable } from 'rxjs';
-import { UserResponseDto } from 'src/interactions/auth/common/userResponseDto';
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from "@nestjs/common";
+import { map, Observable } from "rxjs";
+import { UserResponseDto } from "src/interactors/auth/common/userResponseDto";
 
 @Injectable()
 export class AuthInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<UserResponseDto> {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler
+  ): Observable<UserResponseDto> {
     return next.handle().pipe(
       map((data) => {
         if (!data) {
@@ -18,8 +24,8 @@ export class AuthInterceptor implements NestInterceptor {
           return data;
         }
 
-        res.setHeader('Authorization', data.token);
-        res.setHeader('refresh_token', data.refreshToken);
+        res.setHeader("Authorization", data.token);
+        res.setHeader("refresh_token", data.refreshToken);
         return data.user;
       })
     );

@@ -7,4 +7,4 @@ export type UserDto = {
   fullName: string;
   createdAt: string;
   updatedAt: string;
-}
+};
