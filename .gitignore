@@ -3,5 +3,8 @@ node_modules
 # ts build
 dist
 
+# env
+.env
+
 # test coverage
 coverage
