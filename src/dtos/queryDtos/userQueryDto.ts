@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from "@prisma/client";
 
 const userQuery = Prisma.validator<Prisma.UserArgs>()({
   include: {

@@ -1,3 +1,5 @@
+# REAL TIME CHAT APP
+
 **CREATE POSTGRES DATABASE**
 
 **in terminal run following command:**
@@ -6,8 +8,7 @@
 3. `CREATE DATABASE "real-time-db";`
 4. `CREATE USER admin WITH PASSWORD 'Password';`
 5. `ALTER USER admin SUPERUSER;`
-
-
+6. `CREATE DATABASE "real-time-db-test";`
 
 **MIGRATE DATABASE WITH PRISMA**
 
@@ -15,11 +16,15 @@
 - change modal in *prisma.schema*
 - run `npx prisma migrate dev --name [name is migrate]`
 
-
 **CREATE REDIS**
 
 **in terminal run following command:**
 
-`docker run -p 6379:6379 -d redis`
+`docker run --name real-time-redis -d -p 6379:6379 redis`
+
+**CREATE MONGODB**
+
+**in terminal run following command:**
+
 
 
