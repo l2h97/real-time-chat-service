@@ -29,7 +29,7 @@ export class AuthController {
     private registerService: RegisterService,
     private signInService: SignInService,
     private signOutService: SignOutService,
-    private refreshTokenService: RefreshTokenService
+    private refreshTokenService: RefreshTokenService,
   ) {}
 
   @Post("register")

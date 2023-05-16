@@ -4,6 +4,8 @@ import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ConfigService } from "@nestjs/config";
 import { Configs } from "./configs/configs";
+import { BadRequestException } from "./exceptions/badRequest.exception";
+import { ValidationError } from "class-validator";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,7 +26,13 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-    })
+      exceptionFactory: (validationError: ValidationError[] = []) => {
+        if (validationError[0].constraints) {
+          const message = Object.values(validationError[0].constraints)[0];
+          return new BadRequestException(message);
+        }
+      },
+    }),
   );
 
   const swaggerConfig = new DocumentBuilder()
@@ -38,7 +46,7 @@ async function bootstrap() {
         scheme: "bearer",
         bearerFormat: "JWT",
       },
-      "access-token"
+      "access-token",
     )
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);

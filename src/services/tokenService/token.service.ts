@@ -12,7 +12,7 @@ export type AuthUserDto = {
 export class TokenService {
   constructor(
     private configService: ConfigService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async genToken(payload: AuthUserDto) {

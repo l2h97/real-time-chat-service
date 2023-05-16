@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { UserQueryDto } from "src/dtos/queryDtos/userQueryDto";
+import { UserQueryDto } from "src/entities/userQueryEntity";
 import { UserResponseDto } from "./userResponseDto";
 
 @Injectable()

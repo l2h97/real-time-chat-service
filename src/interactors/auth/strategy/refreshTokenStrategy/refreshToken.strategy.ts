@@ -3,13 +3,13 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { Configs } from "src/configs/configs";
-import { ForbiddenException } from "src/exceptions/forbidden.exception";
+import { UnauthorizedException } from "src/exceptions/unauthorized.exception";
 import { AuthUserDto } from "src/services/tokenService/token.service";
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
-  "jwt_refresh_token"
+  "jwt_refresh_token",
 ) {
   constructor(private configService: ConfigService<Configs, true>) {
     super({
@@ -22,10 +22,6 @@ export class RefreshTokenStrategy extends PassportStrategy(
   }
 
   async validate(payload: AuthUserDto) {
-    if (!payload) {
-      throw new ForbiddenException("Invald token");
-    }
-
     return payload;
   }
 }

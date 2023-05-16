@@ -7,14 +7,14 @@ import {
 } from "class-validator";
 
 export class RegisterPayloadDto {
-  @IsNotEmpty()
-  @IsEmail()
   @MaxLength(50)
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
   @MinLength(6)
+  @IsString()
+  @IsNotEmpty()
   password: string;
 
   @IsNotEmpty()
