@@ -34,6 +34,9 @@
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-use-before-define": ["warn"],
-    "prettier/prettier": "warn"
+    "prettier/prettier": ["warn", {
+      "trailingComma": "all",
+      "useEditorConfig": false
+    }]
   }
 }

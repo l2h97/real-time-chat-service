@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Configs } from "src/configs/configs";
+import { BadRequestException } from "src/exceptions/badRequest.exception";
 import { ForbiddenException } from "src/exceptions/forbidden.exception";
 import { NotFoundException } from "src/exceptions/notFound.exception";
 import { PrismaService } from "src/services/prismaService/prisma.service";
@@ -19,7 +20,7 @@ export class RefreshTokenService {
     private userCreateTokenService: UserCreateTokenService,
     private tokenService: TokenService,
     private configService: ConfigService<Configs, true>,
-    private userTransformService: UserTransformService
+    private userTransformService: UserTransformService,
   ) {}
 
   async execute(authUser: AuthUserDto): Promise<UserAuthResDto> {
@@ -41,6 +42,10 @@ export class RefreshTokenService {
       throw new NotFoundException("User is not found");
     }
 
+    if (!user.refreshToken) {
+      throw new BadRequestException("Token is not found");
+    }
+
     const tokenPayload: AuthUserDto = {
       id: user.id.toString(),
       email: user.email,
@@ -51,7 +56,7 @@ export class RefreshTokenService {
     await this.userCreateTokenService.addTokenToBlackList(
       user.id,
       token,
-      expiredToken
+      expiredToken,
     );
 
     return {

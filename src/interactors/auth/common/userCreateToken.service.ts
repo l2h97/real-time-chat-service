@@ -13,13 +13,13 @@ export class UserCreateTokenService {
   constructor(
     private tokenService: TokenService,
     private configService: ConfigService<Configs, true>,
-    private redisService: RedisService
+    private redisService: RedisService,
   ) {}
 
   async execute(
     id: bigint,
     email: string,
-    userName?: string
+    userName?: string,
   ): Promise<{ token: string; refreshToken: string }> {
     const tokenPayload: AuthUserDto = {
       id: id.toString(),
@@ -29,9 +29,8 @@ export class UserCreateTokenService {
     const token = await this.tokenService.genToken(tokenPayload);
     const refreshToken = await this.tokenService.genRefreshToken(tokenPayload);
 
-    const expiredToken: number = this.configService.get("jwtTokenExpiredIn");
-    await this.addTokenToBlackList(id, token, expiredToken);
-
+    const expiredInToken: number = this.configService.get("jwtTokenExpiredIn");
+    await this.addTokenToBlackList(id, token, expiredInToken);
     return {
       token,
       refreshToken,
@@ -41,11 +40,11 @@ export class UserCreateTokenService {
   async addTokenToBlackList(
     userId: bigint,
     token: string,
-    expiredKey: number
+    expiredKey: number,
   ): Promise<void> {
     try {
       const getUserFromBlackList = await this.redisService.get(
-        userId.toString()
+        userId.toString(),
       );
       if (getUserFromBlackList) {
         await this.redisService.del(userId.toString());

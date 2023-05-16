@@ -8,17 +8,18 @@ import { UserResponseDto } from "../common/userResponseDto";
 import { UserTransformService } from "../common/userTransform.service";
 import { SignInPayloadDto } from "./signInPayloadDto";
 import { ConflictException } from "src/exceptions/conflict.exception";
+import { Response } from "express";
 
 @Injectable()
 export class SignInService {
   constructor(
     private prismaService: PrismaService,
     private userCreateTokenService: UserCreateTokenService,
-    private userTransformService: UserTransformService
+    private userTransformService: UserTransformService,
   ) {}
 
   async execute(
-    payload: SignInPayloadDto
+    payload: SignInPayloadDto,
   ): Promise<UserAuthResDto | UserResponseDto> {
     const { email, password } = payload;
 
@@ -39,7 +40,7 @@ export class SignInService {
     const isMatchPassword = await passwordComparer(
       email,
       password,
-      user.hashPassword
+      user.hashPassword,
     );
     if (!isMatchPassword) {
       return this.userTransformService.execute(user);
@@ -48,7 +49,7 @@ export class SignInService {
     const { token, refreshToken } = await this.userCreateTokenService.execute(
       user.id,
       user.email,
-      user.userName
+      user.userName,
     );
 
     try {

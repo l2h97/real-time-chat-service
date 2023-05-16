@@ -12,7 +12,7 @@ export const testHelper = async () => {
     "..",
     "node_modules",
     ".bin",
-    "prisma"
+    "prisma",
   );
   process.env.DATABASE_URL = url;
   execSync(`${command} db push`, {

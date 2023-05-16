@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Prisma } from "@prisma/client";
 import { Configs } from "src/configs/configs";
-import { UserQueryDto } from "src/dtos/queryDtos/userQueryDto";
 import { ConflictException } from "src/exceptions/conflict.exception";
 import { idGenerator } from "src/pkgs/idGenerator";
 import { passwordHasher } from "src/pkgs/passwordHasher";
@@ -10,10 +9,11 @@ import { PrismaService } from "src/services/prismaService/prisma.service";
 import { UserCreateTokenService } from "../common/userCreateToken.service";
 import { UserTransformService } from "../common/userTransform.service";
 import { RegisterPayloadDto } from "./registerPayloadDto";
-import { UserAuthResDto } from "../common/userAuthResDto";
 import { UserResponseDto } from "../common/userResponseDto";
 import { sanitizeString } from "src/pkgs/sanitizeString";
 import { BadRequestException } from "src/exceptions/badRequest.exception";
+import { UserQueryDto } from "src/entities/userQueryEntity";
+import { UserAuthResDto } from "../common/userAuthResDto";
 
 @Injectable()
 export class RegisterService {
@@ -21,11 +21,11 @@ export class RegisterService {
     private prismaService: PrismaService,
     private userCreateTokenService: UserCreateTokenService,
     private configService: ConfigService<Configs, true>,
-    private userTransformService: UserTransformService
+    private userTransformService: UserTransformService,
   ) {}
 
   async execute(
-    payload: RegisterPayloadDto
+    payload: RegisterPayloadDto,
   ): Promise<UserAuthResDto | UserResponseDto> {
     const { email } = payload;
 
@@ -37,7 +37,7 @@ export class RegisterService {
     const id = await idGenerator();
     const { token, refreshToken } = await this.userCreateTokenService.execute(
       id,
-      email
+      email,
     );
 
     const newUser = await this.createNewUser(id, payload, refreshToken);
@@ -65,16 +65,14 @@ export class RegisterService {
   async createNewUser(
     id: bigint,
     payload: RegisterPayloadDto,
-    refreshToken: string
+    refreshToken: string,
   ): Promise<UserQueryDto> {
-    console.log("id::", id.toString());
-
     const { email, password, firstName, lastName } = payload;
     const salfRounds = this.configService.get("saltRounds");
     const { salt, passwordHashed } = await passwordHasher(
       password,
       email,
-      salfRounds
+      salfRounds,
     );
     const firstNameNomalized = sanitizeString(firstName);
     const lastNameNomalized = sanitizeString(lastName);

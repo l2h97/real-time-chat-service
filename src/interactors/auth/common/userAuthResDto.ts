@@ -1,9 +1,9 @@
-import { ImageDto } from "src/dtos/modelDtos/imageDto";
-import { UserDto } from "src/dtos/modelDtos/userDto";
+import { ImageDto } from "src/dtos/imageDto";
+import { UserDto } from "src/dtos/userDto";
 
 export type UserAuthResDto = {
   token: string;
-  refreshToken: string | null;
+  refreshToken: string;
   user: UserDto & {
     profileImage: ImageDto | Record<string, unknown>;
     coverImage: ImageDto | Record<string, unknown>;

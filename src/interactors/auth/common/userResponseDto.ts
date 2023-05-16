@@ -1,5 +1,5 @@
-import { ImageDto } from "src/dtos/modelDtos/imageDto";
-import { UserDto } from "src/dtos/modelDtos/userDto";
+import { ImageDto } from "src/dtos/imageDto";
+import { UserDto } from "src/dtos/userDto";
 
 export type UserResponseDto = UserDto & {
   profileImage: ImageDto;

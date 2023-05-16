@@ -9,7 +9,7 @@ import { AuthUserDto } from "src/services/tokenService/token.service";
 export class SignOutService {
   constructor(
     private prismaService: PrismaService,
-    private redisService: RedisService
+    private redisService: RedisService,
   ) {}
 
   async execute(authUser: AuthUserDto): Promise<void> {

@@ -1,5 +1,5 @@
 import request from "supertest";
-import { INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { configEnvironments } from "src/configs/configEnvironments";
@@ -8,6 +8,7 @@ import { setupTest } from "src/setupTest/setupTest";
 import { AuthModule } from "../auth.module";
 import { passwordHasher } from "src/pkgs/passwordHasher";
 import { idGenerator } from "src/pkgs/idGenerator";
+import * as idGeneratorModule from "src/pkgs/idGenerator";
 import { RegisterService } from "./register.service";
 import { UserCreateTokenService } from "../common/userCreateToken.service";
 
@@ -32,7 +33,7 @@ describe("POST /auth/register", () => {
 
     prismaService = module.get<PrismaService>(PrismaService);
     userCreateTokenService = module.get<UserCreateTokenService>(
-      UserCreateTokenService
+      UserCreateTokenService,
     );
     registerService = module.get<RegisterService>(RegisterService);
 
@@ -65,22 +66,10 @@ describe("POST /auth/register", () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({
-      statusCode: 400,
-      message: [
-        "email must be shorter than or equal to 50 characters",
-        "email must be an email",
-        "email should not be empty",
-        "password must be longer than or equal to 6 characters",
-        "password must be a string",
-        "password should not be empty",
-        "firstName must be shorter than or equal to 20 characters",
-        "firstName must be a string",
-        "firstName should not be empty",
-        "lastName must be shorter than or equal to 20 characters",
-        "lastName must be a string",
-        "lastName should not be empty",
-      ],
-      error: "Bad Request",
+      status: "BAD_REQUEST",
+      timestamp: expect.any(String),
+      path: "/api/v1/auth/register",
+      message: "email should not be empty",
     });
   });
 
@@ -94,9 +83,10 @@ describe("POST /auth/register", () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({
-      statusCode: 400,
-      message: ["email must be an email"],
-      error: "Bad Request",
+      status: "BAD_REQUEST",
+      timestamp: expect.any(String),
+      path: "/api/v1/auth/register",
+      message: "email must be an email",
     });
   });
 
@@ -111,9 +101,10 @@ describe("POST /auth/register", () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({
-      statusCode: 400,
-      message: ["email must be shorter than or equal to 50 characters"],
-      error: "Bad Request",
+      status: "BAD_REQUEST",
+      timestamp: expect.any(String),
+      path: "/api/v1/auth/register",
+      message: "email must be shorter than or equal to 50 characters",
     });
   });
 
@@ -127,9 +118,10 @@ describe("POST /auth/register", () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({
-      statusCode: 400,
-      message: ["password must be longer than or equal to 6 characters"],
-      error: "Bad Request",
+      status: "BAD_REQUEST",
+      timestamp: expect.any(String),
+      path: "/api/v1/auth/register",
+      message: "password must be longer than or equal to 6 characters",
     });
   });
 
@@ -140,7 +132,7 @@ describe("POST /auth/register", () => {
     const { salt, passwordHashed } = await passwordHasher(
       password,
       email,
-      salfRounds
+      salfRounds,
     );
     const id = await idGenerator();
 
@@ -189,7 +181,7 @@ describe("POST /auth/register", () => {
       lastName: "Test",
     });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatus.OK);
     expect(response.body).toMatchObject({
       id: id.toString(),
       email,
@@ -220,26 +212,24 @@ describe("POST /auth/register", () => {
 
   it("Throw exception when userName generated is exists", async () => {
     const id = BigInt("9797591659866160");
-    jest.mock("../../../pkgs/idGenerator", () =>
-      jest.fn().mockImplementation(() => Promise.resolve(id))
-    );
+    const mockId = jest
+      .spyOn(idGeneratorModule, "idGenerator")
+      .mockReturnValue(Promise.resolve(id));
     const email = "lhhoang98197@gmail.com";
     const password = "123456";
     const salfRounds = configEnvironments().saltRounds;
     const { salt, passwordHashed } = await passwordHasher(
       password,
       email,
-      salfRounds
+      salfRounds,
     );
 
     const profileUrl =
       "https://avatars.abstractapi.com/v1?api_key=0bc8aec6d59f4ebfac48ad24c7a38d0e&name=profileHoangTest";
-    const profileUrlId = await idGenerator();
+    const profileUrlId = BigInt("9797591659866161");
     const coverUrl =
       "https://avatars.abstractapi.com/v1?api_key=0bc8aec6d59f4ebfac48ad24c7a38d0e&name=profileHoangTest";
-    const coverUrlId = await idGenerator();
-
-    console.log("profileUrlId::", profileUrlId.toString());
+    const coverUrlId = BigInt("9797591659866162");
 
     await prismaService.user.create({
       data: {
@@ -283,10 +273,12 @@ describe("POST /auth/register", () => {
 
     expect(status).toBe(400);
     expect(body).toMatchObject({
-      statusCode: 400,
-      message: ["password must be longer than or equal to 6 characters"],
-      error: "Bad Request",
+      status: "BAD_REQUEST",
+      timestamp: expect.any(String),
+      path: "/api/v1/auth/register",
+      message: "Your userName is exists",
     });
+    mockId.mockRestore();
   });
 
   it("Should response success when input has special characters", async () => {
@@ -311,7 +303,7 @@ describe("POST /auth/register", () => {
     });
     const { status, body, headers } = response;
 
-    expect(status).toBe(200);
+    expect(status).toBe(HttpStatus.OK);
     expect(body).toMatchObject({
       id: expect.any(String),
       email: "lhhoang98197@gmail.com",
@@ -340,17 +332,5 @@ describe("POST /auth/register", () => {
       authorization: userCreateTokenServiceData.token,
       refresh_token: userCreateTokenServiceData.refreshToken,
     });
-  });
-
-  it.only("test mock", async () => {
-    const id = BigInt("9797591659866160");
-    jest.mock("../../../pkgs/idGenerator.ts", () => {
-      return {
-        idGenerator: jest.fn().mockImplementation(() => Promise.resolve(id)),
-      };
-    });
-
-    const id1 = await idGenerator();
-    expect(id1.toString()).toBe("9797591659866160");
   });
 });

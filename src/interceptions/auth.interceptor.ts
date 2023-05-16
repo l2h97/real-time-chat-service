@@ -11,7 +11,7 @@ import { UserResponseDto } from "src/interactors/auth/common/userResponseDto";
 export class AuthInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
-    next: CallHandler
+    next: CallHandler,
   ): Observable<UserResponseDto> {
     return next.handle().pipe(
       map((data) => {
@@ -24,10 +24,12 @@ export class AuthInterceptor implements NestInterceptor {
           return data;
         }
 
-        res.setHeader("Authorization", data.token);
-        res.setHeader("refresh_token", data.refreshToken);
-        return data.user;
-      })
+        const { token, refreshToken, user } = data;
+        res.setHeader("Authorization", token);
+        res.setHeader("refresh_token", refreshToken);
+
+        return user;
+      }),
     );
   }
 }

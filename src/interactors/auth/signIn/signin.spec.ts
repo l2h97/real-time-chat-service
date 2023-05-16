@@ -58,7 +58,9 @@ describe("POST /auth/signin", () => {
 
     expect(response.status).toBe(404);
     expect(response.body).toMatchObject({
-      statusCode: 404,
+      status: "NOT_FOUND",
+      timestamp: expect.any(String),
+      path: "/api/v1/auth/signin",
       message: "User is not found",
     });
   });
@@ -71,8 +73,10 @@ describe("POST /auth/signin", () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toMatchObject({
-      statusCode: 400,
-      message: ["email must be an email", "Email should not empty"],
+      status: "BAD_REQUEST",
+      timestamp: expect.any(String),
+      path: "/api/v1/auth/signin",
+      message: "email must be an email",
     });
   });
 
@@ -83,7 +87,7 @@ describe("POST /auth/signin", () => {
     const { salt, passwordHashed } = await passwordHasher(
       password,
       email,
-      salfRounds
+      salfRounds,
     );
     const id = await idGenerator();
 
@@ -166,7 +170,7 @@ describe("POST /auth/signin", () => {
     const { salt, passwordHashed } = await passwordHasher(
       password,
       email,
-      salfRounds
+      salfRounds,
     );
     const id = await idGenerator();
 

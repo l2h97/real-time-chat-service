@@ -1,17 +1,11 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class SignInPayloadDto {
-  @IsNotEmpty({
-    message: "Email should not empty",
-  })
+  @IsNotEmpty()
   @IsEmail()
   email: string;
 
-  @IsNotEmpty({
-    message: "Password should not empty",
-  })
-  @IsString({
-    message: "Password must be string",
-  })
+  @IsNotEmpty()
+  @IsString()
   password: string;
 }
