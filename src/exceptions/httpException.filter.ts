@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from "@nestjs/common";
+import { isString } from "class-validator";
 import { Request, Response } from "express";
 
 @Catch(HttpException)
@@ -16,7 +17,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const message = exception.getResponse();
 
-    response.status(status).json({
+    if (!isString(message) && "message" in message) {
+      return response.status(status).json({
+        statusCode: status,
+        status: HttpStatus[status],
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        message: Array.isArray(message.message)
+          ? message.message[0]
+          : message.message,
+      });
+    }
+
+    return response.status(status).json({
+      statusCode: status,
       status: HttpStatus[status],
       timestamp: new Date().toISOString(),
       path: request.url,

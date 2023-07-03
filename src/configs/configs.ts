@@ -1,18 +1,17 @@
-export type Configs = {
-  port: number;
+export interface IConfigs {
   nodeEnv: string;
+  port: number;
 
-  databaseUrl: string;
+  postgresDatabaseUrl: string;
   postgresHost: string;
   postgresPort: number;
   postgresDb: string;
   postgresUser: string;
   postgresPassword: string;
   postgresDbTest: string;
-  databaseTestUrl: string;
+  postgresDbTestUrl: string;
 
   saltRounds: number;
-
   jwtTokenKey: string;
   jwtTokenExpiredIn: number;
   jwtRefreshTokenKey: string;
@@ -21,6 +20,6 @@ export type Configs = {
   redisHost: string;
   redisPort: number;
 
-  genAvatarsUrl: string;
-  genAvatarsApiKey: string;
-};
+  avatarGenerateUrl: string;
+  avatarGenerateKey: string;
+}

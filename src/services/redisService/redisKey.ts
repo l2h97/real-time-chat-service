@@ -1,0 +1,6 @@
+export enum REDIS_KEY {
+  ACCESS_TOKEN = "ACCT",
+  VERIFY_EMAIL = "VEE",
+  VERIFY_PHONE = "VEP",
+  VERIFY_PASSWORD = "VEPW",
+}

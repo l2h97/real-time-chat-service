@@ -9,33 +9,3 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-model User {
-  id                                                BigInt                  @id @unique
-  email                                             String                  @unique
-  userName                                          String                  @unique
-  firstName                                         String
-  lastName                                          String
-  fullName                                          String
-  hashPassword                                      String
-  salt                                              String
-  refreshToken                                      String?
-  profileImageId                                    BigInt
-  coverImageId                                      BigInt
-  createdAt                                         DateTime                @default(now())
-  updatedAt                                         DateTime                @default(now())
-  profileImage                                      Image                   @relation("profileImage", fields: [profileImageId], references: [id])
-  coverImage                                        Image                   @relation("coverImage", fields: [coverImageId], references: [id])
-  connectedByUsers                                  User[]                  @relation("connectedUsers")
-  connectedToUsers                                  User[]                  @relation("connectedUsers")
-}
-
-model Image {
-  id                                                BigInt                  @id @unique
-  code                                              String?
-  url                                               String
-  createdAt                                         DateTime                @default(now())
-  updatedAt                                         DateTime                @default(now())
-  profileImage                                      User[]                  @relation("profileImage")
-  coverImage                                        User[]                  @relation("coverImage")
-}
