@@ -1,10 +1,11 @@
 {
-  "prettier.requireConfig": true,
   "eslint.format.enable": true,
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.codeActionsOnSave": {
-  "source.fixAll.eslint": true
+    "source.fixAll.eslint": true
   },
   "editor.formatOnType": false,
-  "editor.tabSize": 2
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma",
+  },
 }

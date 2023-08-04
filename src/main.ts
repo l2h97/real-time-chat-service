@@ -2,10 +2,10 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe, VersioningType } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import { ValidationError, useContainer } from "class-validator";
-import { BadRequestException } from "./exceptions/badRequest.exception";
-import { ConfigurationService } from "./services/configurationService/configuration.service";
 import { HttpExceptionFilter } from "./exceptions/httpException.filter";
+import { useContainer } from "class-validator";
+import { ConfigurationService } from "./configs/configuration.service";
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -27,16 +27,17 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-    })
+    }),
   );
+
   app.useGlobalFilters(new HttpExceptionFilter());
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Swagger
   const config = new DocumentBuilder()
-    .setTitle("Paction")
-    .setDescription("The Paction API description")
+    .setTitle("Real time chat apis")
+    .setDescription("Real time chat API description")
     .setVersion("0.1")
     .addBearerAuth()
     .build();
@@ -48,4 +49,5 @@ async function bootstrap() {
   const port = configurationService.port;
   await app.listen(port);
 }
+
 bootstrap();

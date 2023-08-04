@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { ConfigurationService } from "../configurationService/configuration.service";
 import { IAuthUser } from "./authUser.interface";
 import { RedisService } from "../redisService/redis.service";
 import { REDIS_KEY } from "../redisService/redisKey";
 import { PrismaService } from "../prismaService/prisma.service";
+import { ConfigurationService } from "src/configs/configuration.service";
 
 @Injectable()
 export class TokenService {
@@ -12,7 +12,7 @@ export class TokenService {
     private jwtService: JwtService,
     private configurationService: ConfigurationService,
     private redisService: RedisService,
-    private prismaService: PrismaService
+    private prismaService: PrismaService,
   ) {}
 
   async genAccessToken(payload: IAuthUser): Promise<string> {
@@ -22,7 +22,7 @@ export class TokenService {
 
     const redisKey = this.redisService.genRedisKey(
       REDIS_KEY.ACCESS_TOKEN,
-      payload.id
+      payload.id,
     );
     const tokenFromRedis = await this.redisService.get(redisKey);
     if (tokenFromRedis) {
@@ -53,7 +53,7 @@ export class TokenService {
   async genToken(
     payload: IAuthUser,
     tokenKey: string,
-    expiredTime: number
+    expiredTime: number,
   ): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: tokenKey,
