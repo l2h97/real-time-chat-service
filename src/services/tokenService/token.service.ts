@@ -5,21 +5,29 @@ import { RedisService } from "../redisService/redis.service";
 import { REDIS_KEY } from "../redisService/redisKey";
 import { PrismaService } from "../prismaService/prisma.service";
 import { ConfigurationService } from "src/configs/configuration.service";
+import { UnauthorizedException } from "src/exceptions/unauthorized.exception";
+import { JwtPayload } from "jsonwebtoken";
 
 @Injectable()
 export class TokenService {
+  private accessTokenKey: string;
+  private accessTokenExpiredTime: number;
+  private refreshTokenKey: string;
+  private refreshTokenExpiredTime: number;
   constructor(
     private jwtService: JwtService,
     private configurationService: ConfigurationService,
     private redisService: RedisService,
     private prismaService: PrismaService,
-  ) {}
+  ) {
+    this.accessTokenKey = this.configurationService.jwtTokenKey;
+    this.accessTokenExpiredTime = this.configurationService.jwtTokenExpiredIn;
+    this.refreshTokenKey = this.configurationService.jwtRefreshTokenKey;
+    this.refreshTokenExpiredTime =
+      this.configurationService.jwtRefreshTokenExpiredIn;
+  }
 
   async genAccessToken(payload: IAuthUser): Promise<string> {
-    const tokenKey = this.configurationService.jwtTokenKey;
-    const expiredTime = this.configurationService.jwtTokenExpiredIn;
-    const token = await this.genToken(payload, tokenKey, expiredTime);
-
     const redisKey = this.redisService.genRedisKey(
       REDIS_KEY.ACCESS_TOKEN,
       payload.id,
@@ -28,18 +36,25 @@ export class TokenService {
     if (tokenFromRedis) {
       await this.redisService.delete(redisKey);
     }
-    const tokenExpirationTime = this.configurationService.jwtTokenExpiredIn;
-    await this.redisService.set(redisKey, token, tokenExpirationTime);
+
+    const token = await this.genToken(
+      payload,
+      this.accessTokenKey,
+      this.accessTokenExpiredTime,
+    );
+    await this.redisService.set(redisKey, token, this.accessTokenExpiredTime);
 
     return token;
   }
 
   async genRefreshToken(payload: IAuthUser): Promise<string> {
-    const tokenKey = this.configurationService.jwtRefreshTokenKey;
-    const expiredTime = this.configurationService.jwtRefreshTokenExpiredIn;
-    const token = await this.genToken(payload, tokenKey, expiredTime);
+    const token = await this.genToken(
+      payload,
+      this.refreshTokenKey,
+      this.refreshTokenExpiredTime,
+    );
 
-    await this.prismaService.pac_users.update({
+    await this.prismaService.user.update({
       data: {
         refreshToken: token,
       },
@@ -55,9 +70,28 @@ export class TokenService {
     tokenKey: string,
     expiredTime: number,
   ): Promise<string> {
-    return this.jwtService.signAsync(payload, {
+    return await this.jwtService.signAsync(payload, {
       secret: tokenKey,
       expiresIn: expiredTime,
     });
+  }
+
+  async verifyAccessToken(token: string) {
+    try {
+      const decodedToken = await this.jwtService.verifyAsync<JwtPayload>(
+        token,
+        {
+          publicKey: this.accessTokenKey,
+        },
+      );
+
+      return decodedToken;
+    } catch (error) {
+      if (error instanceof Error && error.name === "TokenExpiredError") {
+        throw new UnauthorizedException("Token is Expired");
+      }
+
+      throw new UnauthorizedException("Token is invalid");
+    }
   }
 }

@@ -19,7 +19,10 @@ export class PasswordService {
     };
   }
 
-  async comparePassword(password: string, passwordHashed: string) {
-    return compare(password, passwordHashed);
+  async comparePassword(
+    password: string,
+    passwordHashed: string,
+  ): Promise<boolean> {
+    return await compare(password, passwordHashed);
   }
 }
