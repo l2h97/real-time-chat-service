@@ -10,8 +10,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
+<<<<<<< HEAD
   id                      Int                           @id @default(autoincrement())
   email                   String                        @unique
   firstName               String?
@@ -51,6 +51,42 @@ model FriendList {
   updatedAt               DateTime                      @default(now())
   requestUser             User                          @relation(name: "requestFriend", fields: [requestUserId], references: [id])
   approveUser             User                          @relation(name: "approveFriend", fields: [approveUserId], references: [id])
+=======
+  id             Int          @id
+  email          String       @unique
+  firstName      String?
+  lastName       String?
+  profileImageId Int?
+  coverImage     Int?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now())
+  profileImage   Media?       @relation(name: "profile", fields: [profileImageId], references: [id])
+  mediaUploaded  Media[]
+  requestUser    FriendList[] @relation(name: "requestFriend")
+  approveUser    FriendList[] @relation(name: "approveFriend")
+}
+
+model Media {
+  id          Int      @id
+  code        String?
+  url         String
+  userId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  createdBy   User     @relation(fields: [userId], references: [id])
+  userProfile User[]   @relation(name: "profile")
+}
+
+model FriendList {
+  id            Int              @id
+  requestUserId Int
+  approveUserId Int
+  status        FriendListStatus @default(PENDING)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @default(now())
+  requestUser   User             @relation(name: "requestFriend", fields: [requestUserId], references: [id])
+  approveUser   User             @relation(name: "approveFriend", fields: [approveUserId], references: [id])
+>>>>>>> 2d540a2 (add editorconfig)
 }
 
 enum FriendListStatus {
@@ -58,4 +94,3 @@ enum FriendListStatus {
   APPROVE
   REMOVE
 }
-
