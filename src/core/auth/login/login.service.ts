@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/services/prismaService/prisma.service";
-import {
-  TransformMyProfileResponse,
-  myProfileQuery,
-} from "../register/register.service";
 import { LoginPayload } from "./login.payload";
 import { BadRequestException } from "src/exceptions/badRequest.exception";
 import { PasswordService } from "src/services/passwordService/password.service";
+import {
+  TransformMyProfileResponse,
+  profileQuery,
+} from "src/core/users/transformProfile/transformProfile.service";
 
 @Injectable()
 export class LoginService {
@@ -23,7 +23,7 @@ export class LoginService {
       where: {
         email,
       },
-      ...myProfileQuery,
+      ...profileQuery,
     });
 
     if (!user) {

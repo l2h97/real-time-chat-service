@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   UseInterceptors,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
@@ -12,6 +13,8 @@ import { RegisterPayload } from "./register/register.payload";
 import { TokenInterceptor } from "src/interceptors/token.interceptor";
 import { LoginPayload } from "./login/login.payload";
 import { LoginService } from "./login/login.service";
+import { LogoutService } from "./logout/logout.service";
+import { Request } from "express";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -19,6 +22,7 @@ export class AuthController {
   constructor(
     private readonly registerService: RegisterService,
     private readonly loginService: LoginService,
+    private readonly logoutService: LogoutService,
   ) {}
 
   @Post("register")
@@ -32,5 +36,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() payload: LoginPayload) {
     return await this.loginService.execute(payload);
+  }
+
+  @Post("logout")
+  @UseInterceptors(TokenInterceptor)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async logout(@Req() req: Request) {
+    return await this.logoutService.execute(req.user);
   }
 }

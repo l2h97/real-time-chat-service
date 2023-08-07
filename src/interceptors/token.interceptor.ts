@@ -5,7 +5,7 @@ import {
   NestInterceptor,
 } from "@nestjs/common";
 import { Observable, map } from "rxjs";
-import { MyProfileResponse } from "src/core/auth/register/register.service";
+import { MyProfileResponse } from "src/core/users/transformProfile/transformProfile.service";
 import { IAuthUser } from "src/services/tokenService/authUser.interface";
 import { TokenService } from "src/services/tokenService/token.service";
 

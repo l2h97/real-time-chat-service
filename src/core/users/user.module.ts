@@ -7,7 +7,8 @@ import { GetMeService } from "./getMe/getMe.service";
 import {
   TransformMediaResponse,
   TransformMyProfileResponse,
-} from "../auth/register/register.service";
+  TransformProfileResponse,
+} from "./transformProfile/transformProfile.service";
 
 @Module({
   imports: [PrismaModule, TokenModule],
@@ -17,7 +18,8 @@ import {
     GetMeService,
     TransformMyProfileResponse,
     TransformMediaResponse,
+    TransformProfileResponse,
   ],
-  exports: [],
+  exports: [TransformMyProfileResponse, TransformMediaResponse],
 })
 export class UserModule {}

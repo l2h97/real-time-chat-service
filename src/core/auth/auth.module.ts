@@ -1,24 +1,18 @@
 import { Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
 import { TokenModule } from "src/services/tokenService/token.module";
-import {
-  RegisterService,
-  TransformMediaResponse,
-  TransformMyProfileResponse,
-} from "./register/register.service";
+import { RegisterService } from "./register/register.service";
 import { PrismaModule } from "src/services/prismaService/prisma.module";
 import { PasswordModule } from "src/services/passwordService/password.module";
 import { LoginService } from "./login/login.service";
+import { UserModule } from "../users/user.module";
+import { RedisModule } from "src/services/redisService/redis.module";
+import { LogoutService } from "./logout/logout.service";
 
 @Module({
-  imports: [TokenModule, PrismaModule, PasswordModule],
+  imports: [TokenModule, PrismaModule, PasswordModule, UserModule, RedisModule],
   controllers: [AuthController],
-  providers: [
-    RegisterService,
-    TransformMyProfileResponse,
-    TransformMediaResponse,
-    LoginService,
-  ],
+  providers: [RegisterService, LoginService, LogoutService],
   exports: [],
 })
 export class AuthModule {}

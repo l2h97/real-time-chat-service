@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import {
-  TransformMyProfileResponse,
-  myProfileQuery,
-} from "src/core/auth/register/register.service";
 import { NotFoundException } from "src/exceptions/notFound.exception";
 import { PrismaService } from "src/services/prismaService/prisma.service";
 import { IAuthUser } from "src/services/tokenService/authUser.interface";
+import {
+  TransformMyProfileResponse,
+  profileQuery,
+} from "../transformProfile/transformProfile.service";
 
 @Injectable()
 export class GetMeService {
@@ -19,7 +19,7 @@ export class GetMeService {
       where: {
         id: authUser.id,
       },
-      ...myProfileQuery,
+      ...profileQuery,
     });
 
     if (!user) {

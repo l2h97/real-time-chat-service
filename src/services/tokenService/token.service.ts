@@ -78,14 +78,24 @@ export class TokenService {
 
   async verifyAccessToken(token: string) {
     try {
-      const decodedToken = await this.jwtService.verifyAsync<JwtPayload>(
-        token,
-        {
-          publicKey: this.accessTokenKey,
-        },
-      );
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
+        publicKey: this.accessTokenKey,
+      });
 
-      return decodedToken;
+      if (!payload || !payload.id) {
+        throw new UnauthorizedException("Token is invalid");
+      }
+
+      const redisKey = this.redisService.genRedisKey(
+        REDIS_KEY.ACCESS_TOKEN,
+        payload.id,
+      );
+      const tokenFromRedis = await this.redisService.get(redisKey);
+      if (!tokenFromRedis) {
+        throw new UnauthorizedException("Token is Expired");
+      }
+
+      return payload;
     } catch (error) {
       if (error instanceof Error && error.name === "TokenExpiredError") {
         throw new UnauthorizedException("Token is Expired");
