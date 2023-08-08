@@ -9,6 +9,7 @@ import {
   TransformMyProfileResponse,
   TransformProfileResponse,
 } from "./transformProfile/transformProfile.service";
+import { UpdateProfileService } from "./updateProfile/updateProfile.service";
 
 @Module({
   imports: [PrismaModule, TokenModule],
@@ -19,6 +20,7 @@ import {
     TransformMyProfileResponse,
     TransformMediaResponse,
     TransformProfileResponse,
+    UpdateProfileService,
   ],
   exports: [TransformMyProfileResponse, TransformMediaResponse],
 })

@@ -104,4 +104,36 @@ export class TokenService {
       throw new UnauthorizedException("Token is invalid");
     }
   }
+
+  async verifyRefreshToken(token: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
+        publicKey: this.refreshTokenKey,
+      });
+
+      if (!payload || !payload.id) {
+        throw new UnauthorizedException("Token is invalid");
+      }
+
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: payload.id,
+        },
+      });
+
+      const refreshToken = user ? user.refreshToken : "";
+
+      if (!refreshToken || refreshToken !== token) {
+        throw new UnauthorizedException("Token is invalid");
+      }
+
+      return payload;
+    } catch (error) {
+      if (error instanceof Error && error.name === "TokenExpiredError") {
+        throw new UnauthorizedException("Token is Expired");
+      }
+
+      throw new UnauthorizedException("Token is invalid");
+    }
+  }
 }

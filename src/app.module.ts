@@ -7,6 +7,7 @@ import { AppController } from "./app.controller";
 import { AuthModule } from "./core/auth/auth.module";
 import { UserModule } from "./core/users/user.module";
 import { TokenModule } from "./services/tokenService/token.module";
+import { UploadMediaModule } from "./services/uploadMedia/uploadMedia.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TokenModule } from "./services/tokenService/token.module";
     AuthModule,
     UserModule,
     TokenModule,
+    UploadMediaModule,
   ],
   controllers: [AppController],
   providers: [],

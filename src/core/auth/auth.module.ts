@@ -8,11 +8,17 @@ import { LoginService } from "./login/login.service";
 import { UserModule } from "../users/user.module";
 import { RedisModule } from "src/services/redisService/redis.module";
 import { LogoutService } from "./logout/logout.service";
+import { RefreshTokenService } from "./refreshToken/refreshToken.service";
 
 @Module({
   imports: [TokenModule, PrismaModule, PasswordModule, UserModule, RedisModule],
   controllers: [AuthController],
-  providers: [RegisterService, LoginService, LogoutService],
+  providers: [
+    RegisterService,
+    LoginService,
+    LogoutService,
+    RefreshTokenService,
+  ],
   exports: [],
 })
 export class AuthModule {}

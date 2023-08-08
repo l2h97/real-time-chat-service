@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { profileQuery } from "src/core/users/transformProfile/transformProfile.service";
-import { NotFoundException } from "src/exceptions/notFound.exception";
+import { BadRequestException } from "src/exceptions/badRequest.exception";
 import { PrismaService } from "src/services/prismaService/prisma.service";
 import { RedisService } from "src/services/redisService/redis.service";
 import { REDIS_KEY } from "src/services/redisService/redisKey";
@@ -21,7 +21,7 @@ export class LogoutService {
     });
 
     if (!user) {
-      throw new NotFoundException("User is not found");
+      throw new BadRequestException("User is not found");
     }
 
     const redisKey = this.redisService.genRedisKey(
