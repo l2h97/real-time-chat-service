@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { LocalUploadMediaService } from "./localUploadMedia.service";
+import { ConfigurationModule } from "src/configs/configuration.module";
 
 @Module({
   imports: [
@@ -9,9 +11,10 @@ import { join } from "path";
       exclude: ["/api/(.*)"],
       serveRoot: "/media",
     }),
+    ConfigurationModule,
   ],
   controllers: [],
-  providers: [],
-  exports: [],
+  providers: [LocalUploadMediaService],
+  exports: [LocalUploadMediaService],
 })
 export class UploadMediaModule {}

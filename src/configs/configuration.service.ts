@@ -80,4 +80,20 @@ export class ConfigurationService implements IConfigs {
   get avatarGenerateKey(): string {
     return this.configService.get<string>("avatarGenerateKey");
   }
+
+  get imageBaseUrl(): string {
+    return this.configService.get<string>("imageBaseUrl");
+  }
+
+  get imageMaxSize(): number {
+    return this.configService.get<number>("imageMaxSize");
+  }
+
+  get videoBaseUrl(): string {
+    return this.configService.get<string>("videoBaseUrl");
+  }
+
+  get videoMaxSize(): number {
+    return this.configService.get<number>("videoMaxSize");
+  }
 }

@@ -22,4 +22,9 @@ export interface IConfigs {
 
   avatarGenerateUrl: string;
   avatarGenerateKey: string;
+
+  imageBaseUrl: string;
+  imageMaxSize: number;
+  videoBaseUrl: string;
+  videoMaxSize: number;
 }
