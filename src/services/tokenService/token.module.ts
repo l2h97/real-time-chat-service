@@ -1,12 +1,14 @@
 import { Module } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { TokenService } from "./token.service";
+import { RedisModule } from "../redisService/redis.module";
+import { ConfigurationModule } from "../../configs/configuration.module";
+import { PrismaModule } from "../prismaService/prisma.module";
 
 @Module({
-  imports: [],
+  imports: [RedisModule, ConfigurationModule, PrismaModule],
   controllers: [],
-  providers: [ConfigService, JwtService, TokenService],
+  providers: [TokenService, JwtService],
   exports: [TokenService],
 })
 export class TokenModule {}

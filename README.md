@@ -22,6 +22,9 @@
 
 `docker run --name real-time-redis -d -p 6379:6379 redis`
 
+**CREATE ELASTIC SEARCH**\
+read the [link](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)
+
 **CREATE MONGODB**
 
 **in terminal run following command:**

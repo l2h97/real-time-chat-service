@@ -8,14 +8,14 @@
     "allowSyntheticDefaultImports": true,
     "target": "ESNext",
     "sourceMap": true,
-    "outDir": "dist",
-    "baseUrl": ".",
+    "outDir": "./dist",
+    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "noImplicitAny": true,
+    "strictNullChecks": true,
     "strict": true,
-    "strictPropertyInitialization": false,
-    "typeRoots": ["./node_modules/@types", "./typings/index.d.ts"]
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "src/typings"]
   }
 }

@@ -1,58 +1,57 @@
 import { NestFactory } from "@nestjs/core";
-import { ValidationPipe, VersioningType } from "@nestjs/common";
 import { AppModule } from "./app.module";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { ConfigService } from "@nestjs/config";
-import { Configs } from "./configs/configs";
-import { BadRequestException } from "./exceptions/badRequest.exception";
-import { ValidationError } from "class-validator";
+import { ValidationPipe, VersioningType } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { HttpExceptionFilter } from "./exceptions/httpException.filter";
+import { useContainer } from "class-validator";
+import { ConfigurationService } from "./configs/configuration.service";
+import { LoggerService } from "./services/loggerService/logger.service";
+import { correlationMiddleware } from "./middlewares/correlation.middleware";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const loggerService = await app.resolve(LoggerService);
+  app.use(correlationMiddleware(loggerService));
+
   app.enableCors({
     origin: "*",
-    exposedHeaders: ["Authorization", "refresh_token"],
-    methods: "GET, PUT, POST, DELETE, UPDATE, OPTIONS",
+    exposedHeaders: ["Authorization", "refresh_token", "correlationId"],
+    methods: "GET, PUT, POST, DELETE, UPDATE, OPTIONS, PATCH",
     credentials: true,
   });
+
   app.setGlobalPrefix("api");
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: ["v1"],
     prefix: "",
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      exceptionFactory: (validationError: ValidationError[] = []) => {
-        if (validationError[0].constraints) {
-          const message = Object.values(validationError[0].constraints)[0];
-          return new BadRequestException(message);
-        }
-      },
     }),
   );
+  app.useGlobalFilters(new HttpExceptionFilter());
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle("RealTimeChatService")
-    .setDescription("RealTimeChatService API document")
-    .setVersion("1.0")
-    .addTag("RealTimeChatServiceAPIs")
-    .addBearerAuth(
-      {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT",
-      },
-      "access-token",
-    )
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  // Swagger
+  const config = new DocumentBuilder()
+    .setTitle("Real time chat apis")
+    .setDescription("Real time chat API description")
+    .setVersion("0.1")
+    .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
 
-  const configService = app.get(ConfigService<Configs, true>);
-  await app.listen(configService.get("port"));
+  const configurationService = app.get(ConfigurationService);
+
+  const port = configurationService.port;
+  await app.listen(port);
 }
+
 bootstrap();

@@ -1,24 +1,26 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { RedisClientType } from "redis";
+import { REDIS_KEY } from "./redisKey";
 
 @Injectable()
 export class RedisService {
-  constructor(
-    @Inject("REDIS_CLIENT") private readonly redisClient: RedisClientType,
-  ) {}
+  constructor(@Inject("REDIS_CLIENT") private redisClient: RedisClientType) {}
 
-  async get(value: string) {
-    return this.redisClient.get(value);
+  genRedisKey(key: REDIS_KEY, value: number | string): string {
+    return `${key}-${value}`;
+  }
+
+  async get(key: string) {
+    return this.redisClient.get(key);
   }
 
   async set(key: string, value: string, expireTime: number) {
     await this.redisClient.set(key, value, {
       EX: expireTime,
-      NX: true,
     });
   }
 
-  async del(key: string) {
+  async delete(key: string) {
     await this.redisClient.del(key);
   }
 }

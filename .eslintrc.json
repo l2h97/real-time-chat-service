@@ -1,42 +1,25 @@
 {
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["tsconfig.build.json", "tsconfig.json"],
+    "project": "tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint/eslint-plugin",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint/eslint-plugin"],
   "extends": [
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
   "root": true,
   "env": {
     "node": true,
-    "jest": true,
-    "es6": true
+    "jest": true
   },
-  "ignorePatterns": [
-    "node_module/**",
-    "dist/**",
-    "prisma/**",
-    "**/*.json",
-    "**/*.yml",
-    "*.md",
-    "*ignore"
-  ],
+  "ignorePatterns": ["**/*.js", "node_modules/**", "dist/**"],
   "rules": {
+    "prettier/prettier": "warn",
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/consistent-type-definitions": "off",
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/no-use-before-define": ["warn"],
-    "prettier/prettier": ["warn", {
-      "trailingComma": "all",
-      "useEditorConfig": false
-    }]
+    "@typescript-eslint/no-unused-vars": "warn"
   }
 }
