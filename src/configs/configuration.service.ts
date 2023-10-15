@@ -96,4 +96,16 @@ export class ConfigurationService implements IConfigs {
   get videoMaxSize(): number {
     return this.configService.get<number>("videoMaxSize");
   }
+
+  get esHost(): string {
+    return this.configService.get<string>("esHost");
+  }
+
+  get esPort(): number {
+    return this.configService.get<number>("esPort");
+  }
+
+  get esUrl(): string {
+    return this.configService.get<string>("esUrl");
+  }
 }

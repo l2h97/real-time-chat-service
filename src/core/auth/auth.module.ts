@@ -9,9 +9,19 @@ import { UserModule } from "../users/user.module";
 import { RedisModule } from "src/services/redisService/redis.module";
 import { LogoutService } from "./logout/logout.service";
 import { RefreshTokenService } from "./refreshToken/refreshToken.service";
+import { LoggerModule } from "src/services/loggerService/logger.module";
+import { SearchModule } from "src/services/searchService/search.module";
 
 @Module({
-  imports: [TokenModule, PrismaModule, PasswordModule, UserModule, RedisModule],
+  imports: [
+    TokenModule,
+    PrismaModule,
+    PasswordModule,
+    UserModule,
+    RedisModule,
+    LoggerModule,
+    SearchModule,
+  ],
   controllers: [AuthController],
   providers: [
     RegisterService,

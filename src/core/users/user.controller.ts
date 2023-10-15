@@ -17,7 +17,9 @@ import { GetMeService } from "./getMe/getMe.service";
 import { AllowAnonymous } from "../auth/guards/allowAnonymous.decorator";
 import { UpdateProfilePayload } from "./updateProfile/updateProfile.payload";
 import { UpdateProfileService } from "./updateProfile/updateProfile.service";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("users")
 @Controller("users")
 export class UserController {
   constructor(

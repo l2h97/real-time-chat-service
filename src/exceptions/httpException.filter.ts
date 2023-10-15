@@ -16,9 +16,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = context.getRequest<Request>();
     const status = exception.getStatus();
     const message = exception.getResponse();
+    const correlationId = request.headers["correlationId"];
 
     if (!isString(message) && "message" in message) {
       return response.status(status).json({
+        correlationId,
         statusCode: status,
         status: HttpStatus[status],
         timestamp: new Date().toISOString(),
@@ -30,6 +32,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     return response.status(status).json({
+      correlationId,
       statusCode: status,
       status: HttpStatus[status],
       timestamp: new Date().toISOString(),

@@ -40,5 +40,9 @@ export const configEnvironments = (): IConfigs => {
     videoBaseUrl:
       process.env.VIDEO_BASE_URL || "http://localhost:3001/media/videos",
     videoMaxSize: Number(process.env.VIDEO_MAX_SIZE) || 10000000,
+
+    esHost: process.env.ES_HOST || "localhost",
+    esPort: Number(process.env.ES_PORT) || 9200,
+    esUrl: process.env.ES_URL || "http://localhost:9200",
   };
 };

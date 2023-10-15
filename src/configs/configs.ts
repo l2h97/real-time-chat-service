@@ -27,4 +27,8 @@ export interface IConfigs {
   imageMaxSize: number;
   videoBaseUrl: string;
   videoMaxSize: number;
+
+  esHost: string;
+  esPort: number;
+  esUrl: string;
 }
