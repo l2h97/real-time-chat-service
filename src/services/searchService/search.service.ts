@@ -41,7 +41,6 @@ export class SearchService {
         id: this.USER_DOCUMENT,
         document,
       });
-      console.log("success");
     } catch (error) {
       console.log("SearchService::indexUsers", error);
     }
@@ -50,30 +49,26 @@ export class SearchService {
   async searchUsers(
     data: string,
   ): Promise<{ total: number; result: ISearchUser[] }> {
-    console.log("data::", data);
-
-    const result = await this.elasticsearchService.search<ISearchUser>({
+    const searchData = await this.elasticsearchService.search<ISearchUser>({
       query: {
-        match: {
-          id: data,
+        // match: {
+        //   id: data,
+        // },
+        match_all: {
+          _name: data,
         },
       },
     });
-    console.log("result::", result.hits.hits);
-    console.log("result::", result);
+    console.log("result::", searchData.hits.hits);
+    console.log("result::", searchData);
+    const result = searchData.hits.hits
+      .map((item) => {
+        return item._source;
+      })
+      .filter((item): item is ISearchUser => !!item);
     return {
-      total: Number(result.hits.total) || 0,
-      result: result.hits.hits.map((item): ISearchUser => {
-        return {
-          id: item._source?.id || "",
-          fullName: {
-            firstName: item._source?.fullName?.firstName || "",
-            lastName: item._source?.fullName?.lastName || "",
-          },
-          email: item._source?.email || "",
-          profileImage: item._source?.profileImage || "",
-        };
-      }),
+      total: searchData._shards.total,
+      result,
     };
   }
 }

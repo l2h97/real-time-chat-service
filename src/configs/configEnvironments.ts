@@ -32,7 +32,7 @@ export const configEnvironments = (): IConfigs => {
     avatarGenerateUrl:
       process.env.AVATAR_GENERATE_URL || "https://avatars.abstractapi.com/v1",
     avatarGenerateKey:
-      process.env.AVATAR_GENERATE_KEY || "0bc8aec6d59f4ebfac48ad24c7a38d0e",
+      process.env.AVATAR_GENERATE_KEY || "7abc2b0f2b164f9da29a68917f805c9b",
 
     imageBaseUrl:
       process.env.IMAGE_BASE_URL || "http://localhost:3001/media/images",
@@ -40,6 +40,11 @@ export const configEnvironments = (): IConfigs => {
     videoBaseUrl:
       process.env.VIDEO_BASE_URL || "http://localhost:3001/media/videos",
     videoMaxSize: Number(process.env.VIDEO_MAX_SIZE) || 10000000,
+
+    cloudinaryName: process.env.CLOUDINARY_NAME || "dzuflv2fo",
+    cloudinaryKey: process.env.CLOUDINARY_KEY || "432543737464374",
+    cloudinarySecret:
+      process.env.CLOUDINARY_SECRET || "_xskDAArMFAnCW7qOngzr3yF33A",
 
     esHost: process.env.ES_HOST || "localhost",
     esPort: Number(process.env.ES_PORT) || 9200,

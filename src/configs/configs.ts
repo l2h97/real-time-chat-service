@@ -28,6 +28,10 @@ export interface IConfigs {
   videoBaseUrl: string;
   videoMaxSize: number;
 
+  cloudinaryName: string;
+  cloudinaryKey: string;
+  cloudinarySecret: string;
+
   esHost: string;
   esPort: number;
   esUrl: string;
