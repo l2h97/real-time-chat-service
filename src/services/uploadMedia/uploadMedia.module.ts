@@ -3,6 +3,8 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { LocalUploadMediaService } from "./localUploadMedia.service";
 import { ConfigurationModule } from "src/configs/configuration.module";
+import { CloudinaryService } from "./cloudinary.service";
+import { LoggerModule } from "../loggerService/logger.module";
 
 @Module({
   imports: [
@@ -12,9 +14,10 @@ import { ConfigurationModule } from "src/configs/configuration.module";
       serveRoot: "/media",
     }),
     ConfigurationModule,
+    LoggerModule,
   ],
   controllers: [],
-  providers: [LocalUploadMediaService],
-  exports: [LocalUploadMediaService],
+  providers: [LocalUploadMediaService, CloudinaryService],
+  exports: [LocalUploadMediaService, CloudinaryService],
 })
 export class UploadMediaModule {}

@@ -50,14 +50,19 @@ export class RegisterService {
   }
 
   async createUser(email: string, password: string) {
-    const { salt, passwordHashed } = await this.passwordService.hashPassword(
-      password,
-    );
+    const { salt, passwordHashed } =
+      await this.passwordService.hashPassword(password);
 
     const userCreateInput: Prisma.UserCreateInput = {
       email,
       salt,
       passwordHashed,
+      profileImage: {
+        create: {
+          code: "hehe",
+          url: "hehehe",
+        },
+      },
     };
 
     const user = await this.prismaService.user.create({

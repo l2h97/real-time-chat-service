@@ -15,14 +15,14 @@ model User {
   email          String       @unique
   firstName      String?
   lastName       String?
-  profileImageId Int?
+  profileImageId Int
   coverImageId   Int?
   salt           String?
   passwordHashed String?
   refreshToken   String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now())
-  profileImage   Media?       @relation(name: "profile", fields: [profileImageId], references: [id])
+  profileImage   Media        @relation(name: "profile", fields: [profileImageId], references: [id])
   coverImage     Media?       @relation(name: "cover", fields: [coverImageId], references: [id])
   mediaUploaded  Media[]
   requestUser    FriendList[] @relation(name: "requestFriend")
@@ -33,10 +33,10 @@ model Media {
   id          Int      @id @default(autoincrement())
   code        String?
   url         String
-  userId      Int
+  userId      Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
-  createdBy   User     @relation(fields: [userId], references: [id])
+  createdBy   User?    @relation(fields: [userId], references: [id])
   userProfile User[]   @relation(name: "profile")
   userCover   User[]   @relation(name: "cover")
 }

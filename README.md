@@ -13,8 +13,12 @@
 **MIGRATE DATABASE WITH PRISMA**
 
 **in terminal run following command:**
-- change modal in *prisma.schema*
-- run `npx prisma migrate dev --name [name is migrate]`
+1. Make a schema change that requires custom SQL (for example, to preserve existing data)
+2. Create a draft migration using:
+`npx prisma migrate dev --create-only`
+3. Modify the generated SQL file.
+4. Apply the modified SQL by running:
+`npx prisma migrate dev`
 
 **CREATE REDIS**
 

@@ -97,6 +97,18 @@ export class ConfigurationService implements IConfigs {
     return this.configService.get<number>("videoMaxSize");
   }
 
+  get cloudinaryName(): string {
+    return this.configService.get<string>("cloudinaryName");
+  }
+
+  get cloudinaryKey(): string {
+    return this.configService.get<string>("cloudinaryKey");
+  }
+
+  get cloudinarySecret(): string {
+    return this.configService.get<string>("cloudinarySecret");
+  }
+
   get esHost(): string {
     return this.configService.get<string>("esHost");
   }
