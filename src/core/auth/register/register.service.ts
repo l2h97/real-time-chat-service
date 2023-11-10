@@ -11,6 +11,10 @@ import {
 import { LoggerService } from "src/services/loggerService/logger.service";
 import { SearchService } from "src/services/searchService/search.service";
 import { ISearchUser } from "src/services/searchService/search.interface";
+import { AvatarGenerateService } from "src/services/avatarGeneratorService/avatarGenerator.service";
+import { ConflictException } from "src/exceptions/conflict.exception";
+import { CloudinaryService } from "src/services/uploadMedia/cloudinary.service";
+import { generateImageCode } from "src/helpers/generateImageCode";
 
 @Injectable()
 export class RegisterService {
@@ -20,20 +24,19 @@ export class RegisterService {
     private readonly passwordService: PasswordService,
     private readonly loggerService: LoggerService,
     private readonly searchService: SearchService,
+    private readonly avatarGenerateService: AvatarGenerateService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async execute(payload: RegisterPayload) {
-    const { email, password } = payload;
-    const user = await this.findUser(email);
-
-    this.loggerService.log("user::RegisterService::", user);
+    const user = await this.findUser(payload.email);
 
     if (user) {
       await this.createSearchDoc(user);
       return this.transformMyProfileResponse.transform(user);
     }
 
-    const newUser = await this.createUser(email, password);
+    const newUser = await this.createUser(payload);
     await this.createSearchDoc(newUser);
     return this.transformMyProfileResponse.transform(newUser);
   }
@@ -49,18 +52,25 @@ export class RegisterService {
     return user;
   }
 
-  async createUser(email: string, password: string) {
+  async createUser(payload: RegisterPayload) {
+    const { email, password, lastName, firstName } = payload;
     const { salt, passwordHashed } =
       await this.passwordService.hashPassword(password);
 
+    const fullName = `${firstName.trim()} ${lastName.trim()}`;
+    const profileImage = await this.avatarGenerator(fullName);
     const userCreateInput: Prisma.UserCreateInput = {
       email,
       salt,
+      firstName,
+      lastName,
+      fullName,
       passwordHashed,
       profileImage: {
         create: {
-          code: "hehe",
-          url: "hehehe",
+          code: profileImage.code,
+          url: profileImage.url,
+          type: profileImage.type,
         },
       },
     };
@@ -73,6 +83,28 @@ export class RegisterService {
     return user;
   }
 
+  async avatarGenerator(fullName: string) {
+    const image = await this.avatarGenerateService.avatarGenerator(fullName);
+    if (!image) {
+      throw new ConflictException("Error while generate profile photo");
+    }
+
+    const imageName = generateImageCode(fullName);
+    const base64Image = this.cloudinaryService.base64TransformImage(
+      image,
+      "image/webp",
+    );
+
+    try {
+      return await this.cloudinaryService.uploadImageFromBuffer(
+        base64Image,
+        imageName,
+      );
+    } catch (error) {
+      throw new ConflictException("Error while generate profile photo");
+    }
+  }
+
   async createSearchDoc(user: ProfileQuery): Promise<void> {
     const document: ISearchUser = {
       id: user.id.toString(),
@@ -81,7 +113,7 @@ export class RegisterService {
         lastName: user.lastName || "",
       },
       email: user.email,
-      profileImage: user.profileImage?.url || "",
+      profileImage: user.profileImage.url || "",
     };
     await this.searchService.indexUsers(document);
   }

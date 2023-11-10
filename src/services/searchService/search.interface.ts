@@ -14,18 +14,19 @@ export interface ISearchUser {
 }
 
 export const settingUserSearch: IndicesIndexSettings = {
+  number_of_shards: 3,
+  number_of_replicas: 2,
   analysis: {
     analyzer: {
-      rtc_search_text: {
-        type: "custom",
-        tokenizer: "standard",
-        filter: ["lowercase", "asciifolding"],
+      rtc_user_search: {
+        type: "standard",
       },
     },
   },
 };
 
 export const mappingUserSearch: MappingTypeMapping = {
+  dynamic: "strict",
   properties: {
     id: {
       type: "text",
@@ -34,17 +35,17 @@ export const mappingUserSearch: MappingTypeMapping = {
       properties: {
         firstName: {
           type: "text",
-          analyzer: "rtc_search_text",
+          analyzer: "rtc_user_search",
         },
         lastName: {
           type: "text",
-          analyzer: "rtc_search_text",
+          analyzer: "rtc_user_search",
         },
       },
     },
     email: {
       type: "text",
-      analyzer: "rtc_search_text",
+      analyzer: "rtc_user_search",
     },
     profileImage: {
       type: "text",

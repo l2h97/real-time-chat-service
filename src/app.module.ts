@@ -11,6 +11,7 @@ import { UploadMediaModule } from "./services/uploadMedia/uploadMedia.module";
 import { MediaModule } from "./core/media/media.module";
 import { LoggerModule } from "./services/loggerService/logger.module";
 import { SearchModule } from "./services/searchService/search.module";
+import { AvatarGeneratorModule } from "./services/avatarGeneratorService/avatarGenerator.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SearchModule } from "./services/searchService/search.module";
     MediaModule,
     LoggerModule,
     SearchModule,
+    AvatarGeneratorModule,
   ],
   controllers: [AppController],
   providers: [],

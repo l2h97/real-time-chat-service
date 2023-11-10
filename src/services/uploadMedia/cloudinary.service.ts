@@ -3,7 +3,8 @@ import { v2 } from "cloudinary";
 import { ConfigurationService } from "src/configs/configuration.service";
 import { LoggerService } from "../loggerService/logger.service";
 import { generateImageCode } from "src/helpers/generateImageCode";
-import { IMedia, MEDIA_TYPE } from "./localUploadMedia.service";
+import { IMedia } from "./localUploadMedia.service";
+import { MediaType } from "@prisma/client";
 
 @Injectable()
 export class CloudinaryService {
@@ -25,18 +26,12 @@ export class CloudinaryService {
   async upload(image: Express.Multer.File): Promise<IMedia | undefined> {
     try {
       const imageName = this.createImageCode(image);
-      const base64Image = this.base64TransformImage(image);
-      const result = await this.cloudinary.uploader.upload(base64Image, {
-        folder: this.cloudinaryFolder,
-        resource_type: "image",
-        public_id: imageName,
-      });
+      const base64Image = this.base64TransformImage(
+        image.buffer,
+        image.mimetype,
+      );
 
-      return {
-        code: imageName,
-        url: result.url,
-        type: MEDIA_TYPE.IMAGE,
-      };
+      return await this.uploadImageFromBuffer(base64Image, imageName);
     } catch (error) {
       this.loggerService.error("CloudinaryService::upload", error);
     }
@@ -47,18 +42,12 @@ export class CloudinaryService {
       return await Promise.all(
         images.map(async (item) => {
           const imageName = this.createImageCode(item);
-          const base64Image = this.base64TransformImage(item);
-          const result = await this.cloudinary.uploader.upload(base64Image, {
-            folder: this.cloudinaryFolder,
-            resource_type: "image",
-            public_id: imageName,
-          });
+          const base64Image = this.base64TransformImage(
+            item.buffer,
+            item.mimetype,
+          );
 
-          return {
-            code: imageName,
-            url: result.url,
-            type: MEDIA_TYPE.IMAGE,
-          };
+          return await this.uploadImageFromBuffer(base64Image, imageName);
         }),
       );
     } catch (error) {
@@ -67,9 +56,26 @@ export class CloudinaryService {
     }
   }
 
-  base64TransformImage(image: Express.Multer.File): string {
-    const base64Image = Buffer.from(image.buffer).toString("base64");
-    return `data:${image.mimetype};base64,${base64Image}`;
+  async uploadImageFromBuffer(
+    bufferData: string,
+    fileName: string,
+  ): Promise<IMedia> {
+    const result = await this.cloudinary.uploader.upload(bufferData, {
+      folder: this.cloudinaryFolder,
+      resource_type: "image",
+      public_id: fileName,
+    });
+
+    return {
+      code: fileName,
+      url: result.url,
+      type: MediaType.IMAGE,
+    };
+  }
+
+  base64TransformImage(buffer: Buffer, mimetype: string): string {
+    const base64Image = Buffer.from(buffer).toString("base64");
+    return `data:${mimetype};base64,${base64Image}`;
   }
 
   createImageCode(image: Express.Multer.File) {

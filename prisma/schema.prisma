@@ -13,8 +13,12 @@ datasource db {
 model User {
   id             Int          @id @default(autoincrement())
   email          String       @unique
-  firstName      String?
-  lastName       String?
+  firstName      String
+  lastName       String
+  fullName       String
+  status         UserStatus   @default(ACTIVE)
+  isVerified     Boolean      @default(false)
+  isPublish      Boolean      @default(false)
   profileImageId Int
   coverImageId   Int?
   salt           String?
@@ -22,6 +26,7 @@ model User {
   refreshToken   String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now())
+  deletedAt      DateTime?
   profileImage   Media        @relation(name: "profile", fields: [profileImageId], references: [id])
   coverImage     Media?       @relation(name: "cover", fields: [coverImageId], references: [id])
   mediaUploaded  Media[]
@@ -30,15 +35,16 @@ model User {
 }
 
 model Media {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   code        String?
   url         String
+  type        MediaType @default(IMAGE)
   userId      Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-  createdBy   User?    @relation(fields: [userId], references: [id])
-  userProfile User[]   @relation(name: "profile")
-  userCover   User[]   @relation(name: "cover")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  createdBy   User?     @relation(fields: [userId], references: [id])
+  userProfile User[]    @relation(name: "profile")
+  userCover   User[]    @relation(name: "cover")
 }
 
 model FriendList {
@@ -56,4 +62,15 @@ enum FriendListStatus {
   PENDING
   APPROVE
   REMOVE
+}
+
+enum UserStatus {
+  ACTIVE
+  SLEEP
+  BLOCK
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
 }

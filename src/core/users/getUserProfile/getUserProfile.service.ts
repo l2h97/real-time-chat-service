@@ -17,7 +17,7 @@ export class GetUserProfileService {
   ) {}
 
   async execute(authUser: IAuthUser, id: number) {
-    if (authUser?.id === id) {
+    if (authUser && authUser.id === id) {
       return await this.getMeService.execute(authUser);
     }
 

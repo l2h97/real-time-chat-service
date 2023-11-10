@@ -26,6 +26,6 @@ import { LoggerModule } from "../loggerService/logger.module";
 export class SearchModule implements OnModuleInit {
   constructor(private searchService: SearchService) {}
   async onModuleInit() {
-    await this.searchService.createIndex();
+    // await this.searchService.createIndex();
   }
 }

@@ -25,8 +25,8 @@ export class SearchService {
       if (!checkIndex) {
         await this.elasticsearchService.indices.create({
           index: this.INDEX,
-          // settings: settingUserSearch,
-          // mappings: mappingUserSearch,
+          settings: settingUserSearch,
+          mappings: mappingUserSearch,
         });
       }
     } catch (error) {
@@ -51,11 +51,9 @@ export class SearchService {
   ): Promise<{ total: number; result: ISearchUser[] }> {
     const searchData = await this.elasticsearchService.search<ISearchUser>({
       query: {
-        // match: {
-        //   id: data,
-        // },
-        match_all: {
-          _name: data,
+        multi_match: {
+          query: data,
+          fields: ["fullName", "firstName", "lastName", "email"],
         },
       },
     });

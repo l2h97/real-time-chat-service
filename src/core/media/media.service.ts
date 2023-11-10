@@ -7,6 +7,8 @@ import { CloudinaryService } from "src/services/uploadMedia/cloudinary.service";
 import { UploadMediaException } from "src/exceptions/conflictExceptions/uploadMedia.exception";
 import { StoreMediaException } from "src/exceptions/conflictExceptions/storeMedia.exception";
 import { Prisma } from "@prisma/client";
+import sharp from "sharp";
+import { ImageTypeException } from "src/exceptions/badRequestExceptions/imageType.exception";
 
 @Injectable()
 export class MediaService {
@@ -40,7 +42,31 @@ export class MediaService {
       return [];
     }
 
-    const images = await this.cloudinaryService.uploadMultiple(files);
+    for (const item of files) {
+      const validType = this.imageTypeValidator(item);
+      if (!validType) {
+        throw new ImageTypeException();
+      }
+    }
+    const images = await Promise.all(
+      files.map(async (item) => {
+        try {
+          const imageName = this.cloudinaryService.createImageCode(item);
+          const imageCompression = await this.imageSizeCompression(item);
+          const base64Image = this.cloudinaryService.base64TransformImage(
+            imageCompression,
+            item.mimetype,
+          );
+
+          return await this.cloudinaryService.uploadImageFromBuffer(
+            base64Image,
+            imageName,
+          );
+        } catch (error) {
+          throw new UploadMediaException();
+        }
+      }),
+    );
 
     if (!images || images.length === 0) {
       throw new UploadMediaException();
@@ -67,5 +93,18 @@ export class MediaService {
     } catch (error) {
       throw new StoreMediaException();
     }
+  }
+
+  imageTypeValidator(image: Express.Multer.File) {
+    const checkFileTypeRegex = /.(jpg|jpeg|png|gif|webp)/g;
+    return checkFileTypeRegex.test(image.mimetype);
+  }
+
+  async imageSizeCompression(image: Express.Multer.File): Promise<Buffer> {
+    const compressedObject = await sharp(image.buffer)
+      .resize(1280, 720)
+      .webp({ quality: 50 })
+      .toBuffer();
+    return compressedObject;
   }
 }

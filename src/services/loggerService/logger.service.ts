@@ -35,6 +35,7 @@ export class LoggerService extends ConsoleLogger {
         new transports.File({
           filename: "public/logs/rtc_logs.log",
           level: "debug",
+          format: colorize({ all: true }),
         }),
       ],
     });

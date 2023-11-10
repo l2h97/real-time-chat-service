@@ -24,7 +24,7 @@ export type MyProfileResponse = {
   firstName: string;
   lastName: string;
   fullName: string;
-  profile: MediaResponse | null;
+  profile: MediaResponse;
   cover: MediaResponse | null;
   createdAt: string;
   updatedAt: string;
@@ -50,19 +50,13 @@ export class TransformMyProfileResponse {
   constructor(private transformMediaResponse: TransformMediaResponse) {}
 
   transform(myProfile: ProfileQuery): MyProfileResponse {
-    let fullName = myProfile.firstName || "";
-    if (myProfile.lastName) {
-      fullName += myProfile.lastName;
-    }
     return {
       id: myProfile.id,
       email: myProfile.email,
-      firstName: myProfile.firstName || "",
-      lastName: myProfile.lastName || "",
-      fullName,
-      profile: myProfile.profileImage
-        ? this.transformMediaResponse.transform(myProfile.profileImage)
-        : null,
+      firstName: myProfile.firstName,
+      lastName: myProfile.lastName,
+      fullName: myProfile.fullName,
+      profile: this.transformMediaResponse.transform(myProfile.profileImage),
       cover: myProfile.coverImage
         ? this.transformMediaResponse.transform(myProfile.coverImage)
         : null,
@@ -76,24 +70,18 @@ export class TransformMyProfileResponse {
 export class TransformProfileResponse {
   constructor(private transformMediaResponse: TransformMediaResponse) {}
 
-  transform(myProfile: ProfileQuery): ProfileResponse {
-    let fullName = myProfile.firstName || "";
-    if (myProfile.lastName) {
-      fullName += myProfile.lastName;
-    }
+  transform(profile: ProfileQuery): ProfileResponse {
     return {
-      id: myProfile.id,
-      firstName: myProfile.firstName || "",
-      lastName: myProfile.lastName || "",
-      fullName,
-      profile: myProfile.profileImage
-        ? this.transformMediaResponse.transform(myProfile.profileImage)
+      id: profile.id,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      fullName: profile.fullName,
+      profile: this.transformMediaResponse.transform(profile.profileImage),
+      cover: profile.coverImage
+        ? this.transformMediaResponse.transform(profile.coverImage)
         : null,
-      cover: myProfile.coverImage
-        ? this.transformMediaResponse.transform(myProfile.coverImage)
-        : null,
-      createdAt: myProfile.createdAt.toISOString(),
-      updatedAt: myProfile.updatedAt.toISOString(),
+      createdAt: profile.createdAt.toISOString(),
+      updatedAt: profile.updatedAt.toISOString(),
     };
   }
 }

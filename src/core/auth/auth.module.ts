@@ -11,6 +11,8 @@ import { LogoutService } from "./logout/logout.service";
 import { RefreshTokenService } from "./refreshToken/refreshToken.service";
 import { LoggerModule } from "src/services/loggerService/logger.module";
 import { SearchModule } from "src/services/searchService/search.module";
+import { AvatarGeneratorModule } from "src/services/avatarGeneratorService/avatarGenerator.module";
+import { UploadMediaModule } from "src/services/uploadMedia/uploadMedia.module";
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { SearchModule } from "src/services/searchService/search.module";
     RedisModule,
     LoggerModule,
     SearchModule,
+    AvatarGeneratorModule,
+    UploadMediaModule,
   ],
   controllers: [AuthController],
   providers: [

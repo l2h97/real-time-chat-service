@@ -33,7 +33,7 @@ export class AuthController {
 
   @Post("register")
   @HttpCode(HttpStatus.OK)
-  async register(@Req() req: Request, @Body() payload: RegisterPayload) {
+  async register(@Body() payload: RegisterPayload) {
     return await this.registerService.execute(payload);
   }
 

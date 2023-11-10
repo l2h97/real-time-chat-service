@@ -34,7 +34,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter(loggerService));
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 

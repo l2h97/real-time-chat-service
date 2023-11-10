@@ -1,18 +1,14 @@
 import { Injectable } from "@nestjs/common";
+import { MediaType } from "@prisma/client";
 import { mkdir, stat, writeFile } from "fs/promises";
 import { join } from "path";
 import { ConfigurationService } from "src/configs/configuration.service";
 import { ConflictException } from "src/exceptions/conflict.exception";
 
-export enum MEDIA_TYPE {
-  "IMAGE",
-  "VIDEO",
-}
-
 export interface IMedia {
   code: string;
   url: string;
-  type: MEDIA_TYPE;
+  type: MediaType;
 }
 
 @Injectable()
@@ -43,7 +39,7 @@ export class LocalUploadMediaService {
     const { code, url, type, fileName } = this.createMediaObj(
       image,
       this.imageBaseUrl,
-      MEDIA_TYPE.IMAGE,
+      MediaType.IMAGE,
     );
 
     const imageFile = `${this.imageDir}/${fileName}`;
@@ -73,7 +69,7 @@ export class LocalUploadMediaService {
   createMediaObj(
     media: Express.Multer.File,
     url: string,
-    type: MEDIA_TYPE,
+    type: MediaType,
   ): IMedia & { fileName: string } {
     const code = `${new Date().getTime()}-${
       Math.floor(Math.random() * 900000000) + 100000000
